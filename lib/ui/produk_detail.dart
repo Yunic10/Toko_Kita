@@ -1,6 +1,8 @@
  import 'package:flutter/material.dart';
- import 'package:tokokita/model/produk.dart';
+ import 'package:tokokita/bloc/produk_bloc.dart';
+import 'package:tokokita/model/produk.dart';
  import 'package:tokokita/ui/produk_form.dart';
+ import 'package:tokokita/ui/produk_page.dart';
 import 'package:tokokita/ui/profile_page.dart';
 
  class ProdukDetail extends StatefulWidget {
@@ -18,7 +20,7 @@ import 'package:tokokita/ui/profile_page.dart';
  return Scaffold(
  appBar: AppBar(
  title: const Text('Detail Produk'),
-actions: [
+ actions: [
   Padding(
  padding: const EdgeInsets.only(right: 20.0),
  child: GestureDetector(
@@ -28,16 +30,12 @@ actions: [
  MaterialPageRoute(builder: (context) => const ProfilePage()));
  },
  )),
-],
-
-
-
-
-),
-body: Center( child:
-Column(
-children: [
-Text(
+ ],
+ ),
+ body: Center(
+ child: Column(
+ children: [
+ Text(
  "Kode : ${widget.produk!.kodeProduk}",
  style: const TextStyle(fontSize: 20.0),
  ),
@@ -85,7 +83,12 @@ Text(
  //tombol hapus
  OutlinedButton(
  child: const Text("Ya"),
- onPressed: () {},
+ onPressed: () {
+ ProdukBloc.deleteProduk(id: widget.produk!.id).then((value) {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ProdukPage()));
+            });
+ },
  ),
  //tombol batal
  OutlinedButton(

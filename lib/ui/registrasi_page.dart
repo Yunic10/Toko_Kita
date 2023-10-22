@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+ import 'package:tokokita/bloc/registrasi_bloc.dart';
+ import 'package:tokokita/widget/success_dialog.dart';
+ import 'package:tokokita/widget/warning_dialog.dart';
 
  class RegistrasiPage extends StatefulWidget {
  const RegistrasiPage({Key? key}) : super(key: key);
@@ -118,6 +121,41 @@ import 'package:flutter/material.dart';
  child: const Text("Registrasi"),
  onPressed: () {
  var validate = _formKey.currentState!.validate();
+ if (validate) {
+ if (!_isLoading) _submit();
+ }
+ });
+ }
+
+ void _submit() {
+ _formKey.currentState!.save();
+ setState(() {
+ _isLoading = true;
+ });
+ RegistrasiBloc.registrasi(
+ nama: _namaTextboxController.text,
+ email: _emailTextboxController.text,
+ password: _passwordTextboxController.text)
+ .then((value) {
+ showDialog(
+ context: context,
+ barrierDismissible: false,
+ builder: (BuildContext context) => SuccessDialog(
+ description: "Registrasi berhasil, silahkan login",
+ okClick: () {
+ Navigator.pop(context);
+ },
+ ));
+ }, onError: (error) {
+ showDialog(
+ context: context,
+ barrierDismissible: false,
+ builder: (BuildContext context) => const WarningDialog(
+ description: "Registrasi gagal, silahkan coba lagi",
+ ));
+ });
+ setState(() {
+ _isLoading = false;
  });
  }
  }
